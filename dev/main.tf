@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "3.0.2"
+    }
+  }
+}
+
 provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
@@ -5,12 +14,9 @@ provider "docker" {
 # module database
 # load balancer
 
-module "webapp" {
-  source = "../modulos/webapp"
-}
 
 module "database" {
-  source = "../modulos/data"
+  source = "../modules/data"
 }
 
 resource "docker_container" "mariadb" {
