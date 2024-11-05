@@ -5,5 +5,5 @@ COPY . ./
 RUN npm install
 USER node
 COPY --chown=node:node . .
-EXPOSE 443
+EXPOSE 80
 ENTRYPOINT [ "npm", "start" ]

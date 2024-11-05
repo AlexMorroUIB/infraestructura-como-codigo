@@ -14,3 +14,7 @@ variable "net-redis-phpredisadmin" {
     type = string
     default = "redis-phpredisadmin"
 }
+variable "net-lb-webapp" {
+  type = string
+  default = "lb-webapp"
+}

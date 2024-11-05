@@ -3,7 +3,7 @@ const path = require('path')
 const http = require('http')
 const https = require('https')
 const fs = require('fs')
-const PORT = 443
+const PORT = 80
 const options = {
     pfx: fs.readFileSync("ssl/AlexMorro.pfx"),
     passphrase: "1234"
@@ -44,7 +44,8 @@ app.get('/getData', (req, res) => {
     storageFunctions.getData(req, res);
 });
 
-https.createServer(options, app).listen(PORT);
+//https.createServer(options, app).listen(PORT);
+http.createServer(app).listen(PORT)
 
 process.on('unhandledRejection', (error, promise) => {
     console.log(promise)

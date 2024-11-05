@@ -1,11 +1,6 @@
 variable "webapp-dockerfile-path" {
   type = string
-  default = "../../WebApp/"
-}
-
-variable "webapp-port" {
-  type = number
-  default = 443
+  default = "../../../WebApp/"
 }
 
 variable "webapp-replicas" {
@@ -20,4 +15,8 @@ variable "net-db-webapp" {
 variable "net-redis-webapp" {
   type = string
   default = "redis-webapp"
+}
+variable "net-lb-webapp" {
+  type = string
+  default = "lb-webapp"
 }

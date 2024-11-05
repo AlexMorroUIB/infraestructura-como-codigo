@@ -10,3 +10,6 @@ output "redis-webapp" {
 output "redis-phpredisadmin" {
   value = docker_network.redis-phpredisadmin.name
 }
+output "lb-webapp" {
+  value = docker_network.lb-webapp.name
+}
