@@ -2,12 +2,8 @@ terraform {
   required_providers {
     docker = {
       source  = "kreuzwerker/docker"
-      version = "3.0.2"
     }
   }
-}
-provider "docker" {
-  host = "unix:///var/run/docker.sock"
 }
 
 # Pulls the image
@@ -26,7 +22,7 @@ resource "docker_container" "webapp" {
   image = docker_image.webapp.image_id
 
   ports {
-    internal = 80
+    internal = 443
   }
   
   networks_advanced {

@@ -1,12 +1,15 @@
 */WebApp/.idea
 */WebApp/node_modules
 
+.idea
+
 # Local .terraform directories
-**/.terraform/*
+*/.terraform/*
 
 # .tfstate files
 *.tfstate
 *.tfstate.*
+*.terraform
 
 # Crash log files
 crash.log

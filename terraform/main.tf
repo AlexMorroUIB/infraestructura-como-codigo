@@ -33,6 +33,7 @@ module "cache" {
 module "loadbalancer" {
   source = "./modules/loadbalancer"
   nginx-conf = "/Users/alex/Documents/infraestructura-como-codigo/conf-files/nginx.conf"
+  ssl-path = "/Users/alex/Documents/infraestructura-como-codigo/conf-files/ssl/"
   load-balancer-port = 8080
   net-lb-webapp = module.network.lb-webapp
   depends_on = [ module.WebApp ]

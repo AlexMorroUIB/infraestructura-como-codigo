@@ -18,3 +18,8 @@ variable "net-lb-webapp" {
   type = string
   default = "lb-webapp"
 }
+
+variable "ssl-path" {
+  type = string
+  default = "../../../conf-files/ssl/"
+}

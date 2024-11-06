@@ -26,6 +26,10 @@ resource "docker_container" "load-balancer" {
     host_path      = var.nginx-conf
     container_path = "/etc/nginx/nginx.conf"
   }
+  volumes {
+    host_path = var.ssl-path
+    container_path = "/etc/nginx/"
+  }
   networks_advanced {
     name = var.net-lb-webapp
   }
