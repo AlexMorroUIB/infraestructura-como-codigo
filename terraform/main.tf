@@ -64,4 +64,11 @@ module "loadbalancer" {
   depends_on = [ module.WebApp ]
 }
 
+module "monitoring" {
+  source = "./modules/monitoring"
+  grafana-volume = docker_volume.grafana-volume.name
+  grafana-config = abspath("../conf-files/")
+  prometheus-config = abspath("../conf-files/prometheus.yml")
+}
+
 # crear docker service de sa webapp amb var.web_dev_instance_count
