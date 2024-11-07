@@ -1,3 +1,13 @@
+variable "redis-container-name" {
+  type = string
+  default = "redis"
+}
+
+variable "phpredis-container-name" {
+  type = string
+  default = "phpredisadmin"
+}
+
 variable "net-redis-webapp" {
     type = string
     default = "redis-webapp"

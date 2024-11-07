@@ -1,7 +1,16 @@
-# Nginx load balancer coniguration
-variable "nginx-conf" {
+variable "lb-container-name" {
   type = string
-  default = "../../../conf-files/nginx.conf"
+  default = "load-balancer"
+}
+
+# Load balancer coniguration
+variable "lb-conf" {
+  type = string
+  default = "../../../conf-files/dev/haproxy.cfg"
+}
+variable "lb-certs" {
+  type = string
+  default = "../../../conf-files/certs/"
 }
 
 variable "load-balancer-port" {
@@ -11,15 +20,10 @@ variable "load-balancer-port" {
 
 variable "webapp-container" {
   type = string
-  default = "webapp-0"
+  default = "webapp-1"
 }
 
 variable "net-lb-webapp" {
   type = string
   default = "lb-webapp"
-}
-
-variable "ssl-path" {
-  type = string
-  default = "../../../conf-files/ssl/"
 }

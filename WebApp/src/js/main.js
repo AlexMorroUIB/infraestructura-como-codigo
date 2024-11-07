@@ -2,6 +2,24 @@ let dbbox = document.getElementById("dbstatus")
 let cachebox = document.getElementById("cachestatus")
 let tabla = document.getElementById("tabla")
 let tablaRedis = document.getElementById("tablaRedis")
+let titulo = document.getElementById("titulo")
+
+document.addEventListener('DOMContentLoaded', () => {
+    getInstancia();
+})
+
+async function getInstancia() {
+    try {
+        await fetch('/getInstancia').then(response => response.json())
+            .then(data => {
+                titulo.innerHTML = "Web app in docker | Contenedor " + data.numero;
+            }).catch(err => {
+                console.log(err)
+            })
+    } catch (err) {
+        console.log(err)
+    }
+}
 
 // Every 1000 ms (1 sec) check status of connections
 setInterval(checkConnections, 1000)
@@ -60,13 +78,17 @@ async function getData() {
     try {
         await fetch('/getData').then(response => response.json())
             .then(data => {
-            let datos = data.tabla
-                for (let i = 0; i < datos.length; i++) {
-                    datosTabla += `<tr>
+                let datos = data.tabla
+                if (datos == null) {
+                    datosTabla += `<p>No hay datos en caché</p>`
+                } else {
+                    for (let i = 0; i < datos.length; i++) {
+                        datosTabla += `<tr>
                         <th scope="row">${datos[i].use_ID}</th>
                         <td>${datos[i].use_name}</td>
                         <td>${datos[i].use_surname}</td>
                     </tr>`
+                    }
                 }
                 datosTabla += `</div>`
                 tablaRedis.innerHTML = datosTabla

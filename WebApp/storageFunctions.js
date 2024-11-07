@@ -2,7 +2,7 @@ const mariadb = require('mariadb');
 const {createClient} = require('redis');
 const client = createClient({
     socket: {
-        host: 'redis'
+        host: process.env.REDIS_HOST
     }
 });
 
@@ -13,9 +13,9 @@ client.on('error', async (err) => {
 // Connect to redis
 client.connect().catch(() => console.log("redis disconnected"))
 
-const DB_HOST = 'mariadb'
-const DB_USER = 'user'
-const DB_PWD = 'pass'
+const DB_HOST = process.env.DB_HOST
+const DB_USER = process.env.DB_USER
+const DB_PWD = process.env.DB_PASS
 const DB_NAME = 'webdata'
 
 const dbPool = mariadb.createPool({

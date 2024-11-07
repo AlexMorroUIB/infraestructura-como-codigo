@@ -8,22 +8,20 @@ terraform {
 
 # Pulls the image
 resource "docker_image" "webapp" {
-  name = "webapp"
+  name = "webapp:1.5"
    build {
     context = var.webapp-dockerfile-path
-    tag     = ["webapp:1.0"]
   }
 }
 
 resource "docker_container" "webapp" {
   count = var.webapp-replicas  # Number of replicas var.webapp-replicas
 
-  name  = "webapp-${count.index + 1}"  # Unique name for each container
+  name  = "${var.webapp-container-name}-${count.index + 1}"  # Unique name for each container
   image = docker_image.webapp.image_id
 
-  ports {
-    internal = 443
-  }
+  env = [ "INSTANCIA=${count.index + 1}","DB_USER=${var.db-user}","DB_PASS=${var.db-pass}",
+  "DB_HOST=${var.db-host}","REDIS_HOST=${var.redis-host}" ]
   
   networks_advanced {
     name = var.net-db-webapp

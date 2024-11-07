@@ -1,3 +1,8 @@
+variable "webapp-container-name" {
+  type = string
+  default = "webapp"
+}
+
 variable "webapp-dockerfile-path" {
   type = string
   default = "../../../WebApp/"
@@ -19,4 +24,21 @@ variable "net-redis-webapp" {
 variable "net-lb-webapp" {
   type = string
   default = "lb-webapp"
+}
+
+variable "db-host" {
+  type = string
+  default = "mariadb"
+}
+
+variable "redis-host" {
+  default = "redis"
+}
+
+variable "db-user" {
+  type = string
+}
+
+variable "db-pass" {
+  type = string
 }

@@ -33,4 +33,5 @@ resource "docker_network" "redis-webapp" {
 resource "docker_network" "lb-webapp" {
   name = var.net-lb-webapp
   driver = "bridge"
+  check_duplicate = true
 }

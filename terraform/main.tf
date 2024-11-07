@@ -2,6 +2,17 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
+variable "db_user" {}
+variable "db_pass" {}
+variable "db_root_pass" {}
+variable "db_host" {}
+variable "redis_host" {}
+
+# Variables definidas según el workspace
+locals {
+  webapp-instances = terraform.workspace == "pro" ? 3 : 2
+}
+
 # Networks and load balancer
 module "network" {
   source = "./modules/network"
@@ -9,22 +20,35 @@ module "network" {
 
 module "database" {
   source = "./modules/database"
+  db-container-name = "${terraform.workspace}-mariadb"
+  phpmyadmin-container-name = "${terraform.workspace}-phpmyadmin"
   net-db-webapp = module.network.db-webapp
   net-db-phpmyadmin = module.network.db-phpmyadmin
-  db-volume = "db-dev"
+  db-volume = docker_volume.db-volume.name
+  db_password = var.db_root_pass
+  db-init-file = abspath("../conf-files/${terraform.workspace}/init.sql")
   phpmyadmin-port = 8081
+  depends_on = [ docker_volume.db-volume ]
 }
 
 module "WebApp" {
   source = "./modules/webapp"
+  webapp-container-name = "${terraform.workspace}-webapp"
   webapp-dockerfile-path = "../WebApp/"
-  webapp-replicas = 2
+  webapp-replicas = local.webapp-instances
+  db-user = var.db_user
+  db-pass = var.db_pass
+  db-host = var.db_host
+  redis-host = var.redis_host
   net-db-webapp = module.network.db-webapp
   net-redis-webapp = module.network.redis-webapp
+  depends_on = [ module.database ]
 }
 
 module "cache" {
   source = "./modules/cache"
+  redis-container-name = "${terraform.workspace}-redis"
+  phpredis-container-name = "${terraform.workspace}-phpredisadmin"
   net-redis-webapp = module.network.redis-webapp
   net-redis-phpredisadmin = module.network.redis-phpredisadmin
   phpredisadmin-port = 8082
@@ -32,9 +56,10 @@ module "cache" {
 
 module "loadbalancer" {
   source = "./modules/loadbalancer"
-  nginx-conf = "/Users/alex/Documents/infraestructura-como-codigo/conf-files/nginx.conf"
-  ssl-path = "/Users/alex/Documents/infraestructura-como-codigo/conf-files/ssl/"
-  load-balancer-port = 8080
+  lb-container-name = "${terraform.workspace}-load-balancer"
+  lb-conf = abspath("../conf-files/${terraform.workspace}/haproxy.cfg")
+  lb-certs = abspath("../conf-files/certs/")
+  load-balancer-port = 443
   net-lb-webapp = module.network.lb-webapp
   depends_on = [ module.WebApp ]
 }

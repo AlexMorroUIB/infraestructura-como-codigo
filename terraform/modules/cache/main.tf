@@ -16,7 +16,7 @@ resource "docker_image" "phpredisadmin" {
 
 resource "docker_container" "redis" {
   image = docker_image.redis.image_id
-  name  = "redis"
+  name  = var.redis-container-name
   networks_advanced {
     name = var.net-redis-webapp
   }
@@ -26,8 +26,8 @@ resource "docker_container" "redis" {
 }
 resource "docker_container" "phpredisadmin" {
   image = docker_image.phpredisadmin.image_id
-  name  = "phpredisadmin"
-  env = [ "REDIS_1_HOST=redis" ]
+  name  = var.phpredis-container-name
+  env = [ "REDIS_1_HOST=${var.redis-container-name}" ]
   ports {
     internal = 80
     external = var.phpredisadmin-port

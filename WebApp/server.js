@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express')
 const path = require('path')
 const http = require('http')
@@ -5,8 +6,10 @@ const https = require('https')
 const fs = require('fs')
 const PORT = 443
 const options = {
-    pfx: fs.readFileSync("ssl/AlexMorro.pfx"),
-    passphrase: "1234"
+    key: fs.readFileSync("./ssl/cert.crt.key"),
+    cert: fs.readFileSync("./ssl/cert.crt")
+    //pfx: fs.readFileSync("ssl/AlexMorro.pfx"),
+    //passphrase: "1234"
 }
 const storageFunctions = require('./storageFunctions.js');
 
@@ -42,6 +45,12 @@ app.get('/selectData', (req, res) => {
 
 app.get('/getData', (req, res) => {
     storageFunctions.getData(req, res);
+});
+
+app.get('/getInstancia', (req, res) => {
+    res.status(200).send(
+        { "numero": process.env.INSTANCIA}
+    );
 });
 
 https.createServer(options, app).listen(PORT);
