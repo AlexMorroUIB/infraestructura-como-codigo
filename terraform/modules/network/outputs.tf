@@ -13,3 +13,6 @@ output "redis-phpredisadmin" {
 output "lb-webapp" {
   value = docker_network.lb-webapp.name
 }
+output "prometheus-grafana" {
+  value = docker_network.prometheus-grafana.name
+}

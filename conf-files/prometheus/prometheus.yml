@@ -11,8 +11,14 @@ global:
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
-  # - "first.rules"
+  - "alert-rules.yml"
   # - "second.rules"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets:
+        - 'alertmanager:9093'
 
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
@@ -26,9 +32,12 @@ scrape_configs:
     static_configs:
       - targets: ["localhost:9090"]
 
-  - job_name: docker
-      # metrics_path defaults to '/metrics'
-      # scheme defaults to 'http'.
-
+  - job_name: cadvisor
+    scrape_interval: 5s
     static_configs:
-      - targets: ["host.docker.internal:9323"]
+    - targets:
+      - cadvisor:8080
+
+  # - job_name: docker
+  #   static_configs:
+  #     - targets: ["host.docker.internal:9323"]

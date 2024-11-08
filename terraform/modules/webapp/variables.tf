@@ -42,3 +42,8 @@ variable "db-user" {
 variable "db-pass" {
   type = string
 }
+
+variable "shared-volume" {
+  type = string
+  default = "shared-volume"
+}

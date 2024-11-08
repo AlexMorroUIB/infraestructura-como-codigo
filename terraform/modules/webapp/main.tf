@@ -8,7 +8,7 @@ terraform {
 
 # Pulls the image
 resource "docker_image" "webapp" {
-  name = "webapp:1.5"
+  name = "webapp:1.6"
    build {
     context = var.webapp-dockerfile-path
   }
@@ -32,5 +32,9 @@ resource "docker_container" "webapp" {
   networks_advanced {
     name = var.net-lb-webapp
   }
+
+  volumes {
+    container_path = "/home/node/app/src/img/"
+    volume_name = var.shared-volume
+  }
 }
-## almacenamiento de archivos compartido

@@ -18,3 +18,7 @@ variable "net-lb-webapp" {
   type = string
   default = "lb-webapp"
 }
+variable "net-prometheus-grafana" {
+  type = string
+  default = "prometheus-grafana"
+}

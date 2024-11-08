@@ -42,6 +42,7 @@ module "WebApp" {
   redis-host = var.redis_host
   net-db-webapp = module.network.db-webapp
   net-redis-webapp = module.network.redis-webapp
+  shared-volume = docker_volume.shared.name
   depends_on = [ module.database ]
 }
 
@@ -67,8 +68,15 @@ module "loadbalancer" {
 module "monitoring" {
   source = "./modules/monitoring"
   grafana-volume = docker_volume.grafana-volume.name
-  grafana-config = abspath("../conf-files/")
-  prometheus-config = abspath("../conf-files/prometheus.yml")
+  prometheus-port = 8083
+  grafana-port = 8084
+  alertmanager-port = 8085
+  prometheus-config = abspath("../conf-files/prometheus/prometheus.yml")
+  grafana-config = abspath("../conf-files/grafana/grafana.ini")
+  prometheus-datasource = abspath("../conf-files/grafana/prometheus-datasource.json")
+  grafana-dashboard = abspath("../conf-files/grafana/dashboard.json")
+  alermanager-config = abspath("../conf-files/prometheus/alertmanager.yml")
+  alert-rules = abspath("../conf-files/prometheus/alert-rules.yml")
 }
 
 # crear docker service de sa webapp amb var.web_dev_instance_count

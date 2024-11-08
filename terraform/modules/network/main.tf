@@ -35,3 +35,9 @@ resource "docker_network" "lb-webapp" {
   driver = "bridge"
   check_duplicate = true
 }
+
+resource "docker_network" "prometheus-grafana" {
+  name = var.net-prometheus-grafana
+  driver = "bridge"
+  check_duplicate = true
+}
