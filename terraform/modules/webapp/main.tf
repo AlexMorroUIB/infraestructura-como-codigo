@@ -15,9 +15,9 @@ resource "docker_image" "webapp" {
 }
 
 resource "docker_container" "webapp" {
-  count = var.webapp-replicas  # Number of replicas var.webapp-replicas
+  count = var.webapp-replicas  # Número de replicas var.webapp-replicas
 
-  name  = "${var.webapp-container-name}-${count.index + 1}"  # Unique name for each container
+  name  = "${var.webapp-container-name}-${count.index + 1}"  # Cambia el nombre para cada contenedor
   image = docker_image.webapp.image_id
 
   env = [ "INSTANCIA=${count.index + 1}","DB_USER=${var.db-user}","DB_PASS=${var.db-pass}",

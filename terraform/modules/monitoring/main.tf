@@ -54,11 +54,6 @@ resource "docker_container" "grafana" {
     external = var.grafana-port
   }
 
-#   volumes {
-#     host_path = var.grafana-config
-#     container_path = "/etc/grafana/grafana.ini"
-#   }
-# Prometheus datasource
   volumes {
     container_path = "/etc/grafana/provisioning/datasources/prometheus-datasource.json"
     volume_name = var.prometheus-datasource
@@ -77,6 +72,7 @@ resource "docker_container" "grafana" {
 }
 
 resource "docker_container" "alertmanager" {
+  count = var.alermanager-onoff
   name = "alertmanager"
   image = docker_image.alertmanager.image_id
 

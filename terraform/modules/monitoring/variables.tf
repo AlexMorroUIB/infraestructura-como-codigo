@@ -46,3 +46,7 @@ variable "alertmanager-port" {
   type = number
   default = 8085
 }
+
+variable "alermanager-onoff" {
+  type = number
+}

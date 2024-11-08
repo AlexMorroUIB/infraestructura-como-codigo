@@ -11,6 +11,8 @@ variable "redis_host" {}
 # Variables definidas según el workspace
 locals {
   webapp-instances = terraform.workspace == "pro" ? 3 : 2
+  cache-slaves = terraform.workspace == "pro" ? 2 : 1
+  alertas = terraform.workspace == "pro" ? 1 : 0
 }
 
 # Networks and load balancer
@@ -50,6 +52,7 @@ module "cache" {
   source = "./modules/cache"
   redis-container-name = "${terraform.workspace}-redis"
   phpredis-container-name = "${terraform.workspace}-phpredisadmin"
+  cache-slaves = local.cache-slaves
   net-redis-webapp = module.network.redis-webapp
   net-redis-phpredisadmin = module.network.redis-phpredisadmin
   phpredisadmin-port = 8082
@@ -71,6 +74,7 @@ module "monitoring" {
   prometheus-port = 8083
   grafana-port = 8084
   alertmanager-port = 8085
+  alermanager-onoff = local.alertas
   prometheus-config = abspath("../conf-files/prometheus/prometheus.yml")
   grafana-config = abspath("../conf-files/grafana/grafana.ini")
   prometheus-datasource = abspath("../conf-files/grafana/prometheus-datasource.json")

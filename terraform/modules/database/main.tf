@@ -17,7 +17,9 @@ resource "docker_image" "phpmyadmin" {
 resource "docker_container" "mariadb" {
   image = docker_image.mariadb.image_id
   name  = var.db-container-name
-  env = ["MARIADB_ROOT_PASSWORD=${var.db_password}"]
+
+  env = [ "MARIADB_ROOT_PASSWORD=${var.db_password}" ]
+  
   volumes {
     container_path = "/var/lib/mysql"
     volume_name = var.db-volume
@@ -37,7 +39,7 @@ resource "docker_container" "mariadb" {
 resource "docker_container" "phpmyadmin" {
   image = docker_image.phpmyadmin.image_id
   name  = var.phpmyadmin-container-name
-  env = ["PMA_HOST=${var.db-container-name}","PMA_PORT=3306"]
+  env = ["PMA_HOST=${docker_container.mariadb.name}","PMA_PORT=3306"]
   ports {
     internal = 80
     external = var.phpmyadmin-port

@@ -8,6 +8,11 @@ variable "phpredis-container-name" {
   default = "phpredisadmin"
 }
 
+variable "cache-slaves" {
+  type = number
+  default = 0
+}
+
 variable "net-redis-webapp" {
     type = string
     default = "redis-webapp"
