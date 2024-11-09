@@ -12,6 +12,13 @@ db_pass = "pass"
 db_root_pass = "pass"
 db_host = "dev-mariadb"
 redis_host = "dev-redis"
+
+y otro archivo `mysql-exporter.my-cnf` en `conf-files/dev/prometheus/mysql-exporter.my-cnf`
+[client]
+user = exporter
+password = pass
+host = dev-mariadb
+
 `terraform workspace select dev`
 `terraform apply -var-file="dev.tfvars"`
 
@@ -23,5 +30,12 @@ db_pass = "pass"
 db_root_pass = "pass"
 db_host = "pro-mariadb"
 redis_host = "pro-redis"
+
+y otro archivo `mysql-exporter.my-cnf` en `conf-files/pro/prometheus/mysql-exporter.my-cnf`
+[client]
+user = exporter
+password = pass
+host = pro-mariadb
+
 `terraform workspace select pro`
 `terraform apply -var-file="pro.tfvars"`

@@ -1,0 +1,88 @@
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: "monitor"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets:
+        - 'alertmanager:9093'
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "alert-rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+  # Mariadb exporter job
+  - job_name: mariadb
+    params:
+      auth_module: [client]
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['dev-mariadb:3306']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+          # The mysqld_exporter host:port
+        replacement: mysql-exporter:9104
+  # Redis exporter job
+  - job_name: 'redis'
+    static_configs:
+      - targets:
+        - redis://dev-redis-master:6379
+        - redis://dev-redis-slave-1:6379
+    metrics_path: /scrape
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: redis-exporter:9121
+  # haproxy exporter job
+  - job_name: haproxy
+    params:
+      auth_module: [client]
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['haproxy:8404']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+          # The mysqld_exporter host:port
+        replacement: haproxy-exporter:9101
+  # WebApp exporter job (balckbox)
+  - job_name: 'webapp'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Comprueba que la respuesta sea HTTP 200 y usamos el móculo que hemos creado con skip trusted certificate
+    static_configs:
+      - targets:
+        - https://dev-webapp-1
+        - https://dev-webapp-2
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115  # blackbox exporter hostname:port.

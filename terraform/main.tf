@@ -7,6 +7,7 @@ variable "db_pass" {}
 variable "db_root_pass" {}
 variable "db_host" {}
 variable "redis_host" {}
+variable "grafana_pass" {}
 
 # Variables definidas según el workspace
 locals {
@@ -15,7 +16,6 @@ locals {
   alertas = terraform.workspace == "pro" ? 1 : 0
 }
 
-# Networks and load balancer
 module "network" {
   source = "./modules/network"
 }
@@ -71,16 +71,19 @@ module "loadbalancer" {
 module "monitoring" {
   source = "./modules/monitoring"
   grafana-volume = docker_volume.grafana-volume.name
+  grafana_pass = var.grafana_pass
   prometheus-port = 8083
   grafana-port = 8084
   alertmanager-port = 8085
   alermanager-onoff = local.alertas
-  prometheus-config = abspath("../conf-files/prometheus/prometheus.yml")
+  prometheus-config = abspath("../conf-files/${terraform.workspace}/prometheus/prometheus.yml")
   grafana-config = abspath("../conf-files/grafana/grafana.ini")
-  prometheus-datasource = abspath("../conf-files/grafana/prometheus-datasource.json")
+  prometheus-datasource = abspath("../conf-files/grafana/datasources.yaml")
   grafana-dashboard = abspath("../conf-files/grafana/dashboard.json")
-  alermanager-config = abspath("../conf-files/prometheus/alertmanager.yml")
-  alert-rules = abspath("../conf-files/prometheus/alert-rules.yml")
+  alermanager-config = abspath("../conf-files/${terraform.workspace}/prometheus/alertmanager.yml")
+  alert-rules = abspath("../conf-files/${terraform.workspace}/prometheus/alert-rules.yml")
+  mysql-exporter-config = abspath("../conf-files/${terraform.workspace}/prometheus/mysql-exporter.my-cnf")
+  redis-host = "${terraform.workspace}-redis-master"
+  blackbox-config = abspath("../conf-files/${terraform.workspace}/prometheus/blackbox-config.yml")
+  depends_on = [ module.cache, module.database, module.loadbalancer, module.WebApp ]
 }
-
-# crear docker service de sa webapp amb var.web_dev_instance_count

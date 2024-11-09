@@ -40,3 +40,5 @@ override.tf.json
 terraform.rc
 terraform/.terraform.lock.hcl
 /WebApp/node_modules
+conf-files/dev/prometheus/mysql-exporter.my-cnf
+conf-files/pro/prometheus/mysql-exporter.my-cnf

@@ -33,6 +33,18 @@ variable "net-prometheus-grafana" {
     type = string
     default = "prometheus-grafana"
 }
+variable "net-db" {
+  type = string
+  default = "db-phpmyadmin"
+}
+variable "net-redis" {
+  type = string
+  default = "redis-phpredisadmin"
+}
+variable "net-lb-webapp" {
+  type = string
+  default = "lb-webapp"
+}
 
 variable "prometheus-port" {
   type = number
@@ -49,4 +61,22 @@ variable "alertmanager-port" {
 
 variable "alermanager-onoff" {
   type = number
+}
+
+variable "grafana_pass" {
+  type = string
+}
+
+variable "mysql-exporter-config" {
+  type = string
+}
+
+variable "redis-host" {
+  type = string
+  default = "redis-master"
+}
+
+variable "blackbox-config" {
+  type = string
+  default = "../../../conf-files/dev/prometheus/blackbox-config.yml"
 }
