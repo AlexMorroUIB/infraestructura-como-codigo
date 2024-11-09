@@ -5,8 +5,6 @@ provider "docker" {
 variable "db_user" {}
 variable "db_pass" {}
 variable "db_root_pass" {}
-variable "db_host" {}
-variable "redis_host" {}
 variable "grafana_pass" {}
 
 # Variables definidas según el workspace
@@ -40,12 +38,12 @@ module "WebApp" {
   webapp-replicas = local.webapp-instances
   db-user = var.db_user
   db-pass = var.db_pass
-  db-host = var.db_host
-  redis-host = var.redis_host
+  db-host = module.database.db-host
+  redis-host = module.cache.redis-host
   net-db-webapp = module.network.db-webapp
   net-redis-webapp = module.network.redis-webapp
-  shared-volume = docker_volume.shared.name
-  depends_on = [ module.database ]
+  shared-volume = docker_volume.shared-volume.name
+  depends_on = [ module.database, docker_volume.shared-volume ]
 }
 
 module "cache" {
@@ -77,13 +75,13 @@ module "monitoring" {
   alertmanager-port = 8085
   alermanager-onoff = local.alertas
   prometheus-config = abspath("../conf-files/${terraform.workspace}/prometheus/prometheus.yml")
-  grafana-config = abspath("../conf-files/grafana/grafana.ini")
-  prometheus-datasource = abspath("../conf-files/grafana/datasources.yaml")
-  grafana-dashboard = abspath("../conf-files/grafana/dashboard.json")
+  grafana-provisioning = abspath("../conf-files/${terraform.workspace}/grafana/provisioning")
+  grafana-dashboard = abspath("../conf-files/${terraform.workspace}/grafana/dashboard.json")
   alermanager-config = abspath("../conf-files/${terraform.workspace}/prometheus/alertmanager.yml")
   alert-rules = abspath("../conf-files/${terraform.workspace}/prometheus/alert-rules.yml")
   mysql-exporter-config = abspath("../conf-files/${terraform.workspace}/prometheus/mysql-exporter.my-cnf")
-  redis-host = "${terraform.workspace}-redis-master"
+  redis-host = module.cache.redis-host
+  load-balancer-host = module.loadbalancer.lb-host
   blackbox-config = abspath("../conf-files/${terraform.workspace}/prometheus/blackbox-config.yml")
-  depends_on = [ module.cache, module.database, module.loadbalancer, module.WebApp ]
+  depends_on = [ module.cache, module.database, module.loadbalancer, module.WebApp, docker_volume.grafana-volume ]
 }

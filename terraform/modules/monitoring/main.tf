@@ -66,8 +66,8 @@ resource "docker_container" "grafana" {
   }
 
   volumes {
-    container_path = "/etc/grafana/provisioning/datasources/datasources.yaml"
-    host_path = var.prometheus-datasource
+    container_path = "/etc/grafana/provisioning/"
+    host_path = var.grafana-provisioning
   }
   volumes {
     container_path = "/var/lib/grafana/dashboards/main.json"
@@ -95,6 +95,9 @@ resource "docker_container" "alertmanager" {
   volumes {
     container_path = "/etc/alertmanager/config.yml"
     volume_name = var.alermanager-config
+  }
+  networks_advanced {
+    name = var.net-prometheus-grafana
   }
 }
 
@@ -132,7 +135,7 @@ resource "docker_container" "haproxy-exporter" {
   name = "haproxy-exporter"
   image = docker_image.haproxy-exporter.image_id
 
-  command = [ "--haproxy.scrape-uri=http://haproxy:8404/haproxy?stats;csv" ]
+  command = [ "--haproxy.scrape-uri=http://${var.load-balancer-host}:8404/haproxy?stats;csv" ]
 
   networks_advanced {
     name = var.net-prometheus-grafana

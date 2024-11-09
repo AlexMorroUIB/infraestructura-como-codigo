@@ -2,10 +2,6 @@ variable "grafana-volume" {
   type = string
 }
 
-variable "grafana-config" {
-  type = string
-  default = "../../../conf-files/grafana/grafana.ini"
-}
 variable "prometheus-config" {
   type = string
   default = "../../../conf-files/prometheus/prometheus.yml"
@@ -19,7 +15,7 @@ variable "alert-rules" {
   default = "../../../conf-files/prometheus/alert-rules.yml"
 }
 
-variable "prometheus-datasource" {
+variable "grafana-provisioning" {
   type = string
   default = "../../../conf-files/grafana/prometheus-datasource.json"
 }
@@ -74,6 +70,10 @@ variable "mysql-exporter-config" {
 variable "redis-host" {
   type = string
   default = "redis-master"
+}
+
+variable "load-balancer-host" {
+  type = string
 }
 
 variable "blackbox-config" {

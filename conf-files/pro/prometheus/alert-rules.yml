@@ -18,7 +18,15 @@ groups:
           summary: "El contenedor {{ $labels.instance }} no responde."
           description: "El contenedor {{ $labels.instance }} no ha respondido durante 5s."
       - alert: HAproxy-notRunning
-        expr: up{job="haproxy"} < 1
+        expr: haproxy_up{job="haproxy"} < 1
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "El contenedor {{ $labels.instance }} no responde."
+          description: "El contenedor {{ $labels.instance }} no ha respondido durante 5s."
+      - alert: Redis-Container-notRunning
+        expr: redis_up{job="redis"} == 0
         for: 5s
         labels:
           severity: warning
